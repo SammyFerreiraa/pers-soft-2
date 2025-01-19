@@ -72,7 +72,7 @@ def update_task(
     task = session.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-    for key, value in task_data.dict(exclude_unset=True).items():
+    for key, value in task_data.model_dump(exclude_unset=True).items():
         if key == "collaborators":
             if value:
                 collaborators = session.exec(select(Collaborator).where(Collaborator.id.in_(value))).all()

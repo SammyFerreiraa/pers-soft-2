@@ -43,7 +43,7 @@ def read_project(project_id: int, session: Session = Depends(get_session)):
     
 @router.post("", response_model=Project, status_code=201, summary="Criar um novo projeto.")
 def create_project(project_dto: CreateProjectDTO, session: Session = Depends(get_session)):
-    project = Project(**project_dto.dict())
+    project = Project(**project_dto.model_dump())
 
     session.add(project)
     session.commit()
@@ -67,7 +67,7 @@ def update_project(
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     
-    for key, value in updated_project.dict(exclude_unset=True).items():
+    for key, value in updated_project.model_dump(exclude_unset=True).items():
         setattr(project, key, value)
     
     session.add(project)

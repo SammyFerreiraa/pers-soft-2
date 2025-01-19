@@ -46,7 +46,7 @@ def update_collaborator(
     collaborator = session.get(Collaborator, collaborator_id)
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
-    for key, value in updated_collaborator.dict(exclude_unset=True).items():
+    for key, value in updated_collaborator.model_dump(exclude_unset=True).items():
         setattr(collaborator, key, value)
     session.add(collaborator)
     session.commit()
