@@ -15,6 +15,14 @@ router = APIRouter(
 
 @router.get("", response_model=list[TaskRead], status_code=200, summary="Buscar todas as tarefas.")
 def read_tasks(offset: int = 0, limit: int = 10, session: Session = Depends(get_session)):
+    """
+    Recupera uma lista de tarefas.
+
+    - **offset**: Número de registros a serem pulados.
+    - **limit**: Número de registros a serem retornados.
+
+    Retorna uma lista de tarefas.
+    """
     statement = select(Task).offset(offset).limit(limit)
     tasks = session.exec(statement).all()
     return tasks
@@ -24,6 +32,13 @@ def create_task(
     task_data: CreateTaskDTO,
     session: Session = Depends(get_session)
 ):
+    """
+    Cria uma nova tarefa.
+
+    - **task_data**: Dados da tarefa a ser criados.
+
+    Retorna a tarefa criada.
+    """
     project = session.exec(select(Project).where(Project.id == task_data.project_id)).first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -58,6 +73,13 @@ def create_task(
 
 @router.get("/{task_id}", response_model=TaskRead, status_code=200, summary="Buscar uma tarefa.")
 def read_task(task_id: int, session: Session = Depends(get_session)):
+    """
+    Recupera uma tarefa específico pelo ID.
+
+    - **task_id**: O ID da tarefa a ser recuperado.
+
+    Retorna a tarefa correspondente ao ID fornecido.
+    """
     task = session.exec(select(Task).where(Task.id == task_id)).first()
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -69,6 +91,14 @@ def update_task(
     task_data: UpdateTaskDTO,
     session: Session = Depends(get_session)
 ):
+    """
+    Atualiza as informações de uma tarefa existente.
+
+    - **task_id**: O ID da tarefa a ser atualizado.
+    - **task_data**: Dados a serem atualizados na tarefa.
+
+    Retorna a tarefa atualizada.
+    """
     task = session.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -90,6 +120,13 @@ def update_task(
 
 @router.delete("/{task_id}", status_code=204, summary="Deletar uma tarefa.")
 def delete_task(task_id: int, session: Session = Depends(get_session)):
+    """
+    Deleta uma tarefa específico pelo ID.
+
+    - **task_id**: O ID da tarefa a ser deletado.
+
+    Retorna uma mensagem de sucesso após a exclusão.
+    """
     task = session.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -99,6 +136,13 @@ def delete_task(task_id: int, session: Session = Depends(get_session)):
 
 @router.get("/{task_id}/collaborators", response_model=list[Collaborator], status_code=200, summary="Buscar colaboradores de uma tarefa.")
 def read_task_collaborators(task_id: int, session: Session = Depends(get_session)):
+    """
+    Busca os colaboradores de uma tarefa específica pelo ID.
+
+    - **task_id**: O ID da tarefa a ser buscada.
+
+    Retorna uma lista de colaboradores associados à tarefa.
+    """
     task = session.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")

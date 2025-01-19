@@ -76,7 +76,7 @@ def create_project(project_dto: CreateProjectDTO, session: Session = Depends(get
 @router.delete("/{project_id}", status_code=204, summary="Deletar um projeto.")
 def delete_project(project_id: int, session: Session = Depends(get_session)):
     """
-    Deleta um projeto do banco de dados.
+    Deleta um projeto.
 
     - **project_id**: O ID do projeto a ser deletado.
 
