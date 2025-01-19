@@ -1,0 +1,10 @@
+Separação de tarefas:
+
+Modulo de colaboradores: Rubens
+Modulo de tarefas: Sammy
+Modulo de projetos: Sammy
+Documentação: Rubens
+Entidades: Rubens e Sammy
+Repositório: Sammy
+Main e Database: Rubens
+Arquitetura: Sammy
