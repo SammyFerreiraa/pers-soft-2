@@ -27,7 +27,7 @@ classDiagram
     created_date: datetime
     updated_date: datetime
   }
-  Project "1"--> "*" Task
-  Task "*"--> "*" Collaborator
+  Project "1"-- "*" Task
+  Task "*"-- "*" Collaborator
 
 ```
