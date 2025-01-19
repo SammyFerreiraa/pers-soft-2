@@ -15,6 +15,14 @@ router = APIRouter(
 
 @router.get("", response_model=list[CollaboratorRead], summary="Buscar todos os colaboradores.", status_code=200)
 def read_collaborators(offset: int = 0, limit: int = 10, session: Session = Depends(get_session)):
+    """
+    Recupera lista de colaboradores.
+
+    - **offset**: Número de registros a serem pulados.
+    - **limit**: Número de registros a serem retornados.
+
+    Retorna uma lista de colaboradores.
+    """
     statement = select(Collaborator).offset(offset).limit(limit)
     collaborators = session.exec(statement).all()
     return collaborators
@@ -22,6 +30,13 @@ def read_collaborators(offset: int = 0, limit: int = 10, session: Session = Depe
 
 @router.get("/{collaborator_id}", response_model=CollaboratorRead, summary="Buscar colaborador por id.", status_code=200)
 def read_collaborator(collaborator_id: int, session: Session = Depends(get_session)):
+    """
+    Recupera um colaborador específico pelo ID.
+
+    - **collaborator_id**: O ID do colaborador a ser recuperado.
+
+    Retorna as informações do colaborador se encontrado, caso contrário, retorna um erro 404.
+    """
     collaborator = session.exec(select(Collaborator).where(Collaborator.id == collaborator_id)).first()
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
@@ -29,6 +44,13 @@ def read_collaborator(collaborator_id: int, session: Session = Depends(get_sessi
 
 @router.post("", response_model=CollaboratorRead, summary="Criar colaborador.", status_code=201)
 def create_collaborator(collaborator_dto: CreateCollaboratorDTO, session: Session = Depends(get_session)):
+    """
+    Cria um novo colaborador.
+
+    - **collaborator_dto**: Dados do colaborador a serem criados.
+
+    Retorna o colaborador criado.
+    """
     try:
         collaborator = Collaborator.from_orm(collaborator_dto)
         session.add(collaborator)
@@ -43,6 +65,14 @@ def create_collaborator(collaborator_dto: CreateCollaboratorDTO, session: Sessio
 def update_collaborator(
     collaborator_id: int, updated_collaborator: UpdateCollaboratorDTO, session: Session = Depends(get_session)
 ):
+    """
+    Atualiza as informações de um colaborador existente.
+
+    - **collaborator_id**: ID do colaborador a ser atualizado.
+    - **updated_collaborator**: Dados a serem atualizados no colaborador.
+
+    Retorna o colaborador atualizado.
+    """
     collaborator = session.get(Collaborator, collaborator_id)
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
@@ -55,6 +85,13 @@ def update_collaborator(
 
 @router.delete("/{collaborator_id}", summary="Deletar colaborador.", status_code=204)
 def delete_collaborator(collaborator_id: int, session: Session = Depends(get_session)):
+    """
+    Deleta um colaborador.
+
+    - **collaborator_id**: ID do colaborador a ser deletado.
+
+    Retorna uma mensagem de sucesso após a exclusão.
+    """
     collaborator = session.get(Collaborator, collaborator_id)
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
@@ -64,6 +101,13 @@ def delete_collaborator(collaborator_id: int, session: Session = Depends(get_ses
 
 @router.get("/{collaborator_id}/tasks", response_model=list[Task], summary="Buscar tarefas de um colaborador.")
 def read_collaborator_tasks(collaborator_id: int, session: Session = Depends(get_session)):
+    """
+    Recupera todas as tarefas de um colaborador específico.
+
+    - **collaborator_id**: ID do colaborador cujas tarefas serão recuperadas.
+
+    Retorna uma lista de tarefas associadas ao colaborador.
+    """
     collaborator = session.get(Collaborator, collaborator_id)
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
@@ -73,6 +117,14 @@ def read_collaborator_tasks(collaborator_id: int, session: Session = Depends(get
 def read_collaborator_tasks_by_date(
     collaborator_id: int, date: date, session: Session = Depends(get_session)
 ):
+    """
+    Recupera todas as tarefas de um colaborador para uma data específica.
+
+    - **collaborator_id**: ID do colaborador cujas tarefas serão recuperadas.
+    - **date**: A data para a qual as tarefas serão recuperadas.
+
+    Retorna uma lista de tarefas associadas ao colaborador para a data informada.
+    """
     collaborator = session.get(Collaborator, collaborator_id)
     if not collaborator:
         raise HTTPException(status_code=404, detail="Collaborator not found")
